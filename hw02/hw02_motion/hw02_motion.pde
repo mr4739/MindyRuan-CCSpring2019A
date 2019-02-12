@@ -11,12 +11,14 @@ CONTROLS:
 *** UP/DOWN - increase/decrease the Y radius of ellipse respectively
 *** RIGHT/LEFT - increase/decrease the X radius of ellipse respectively
 *** R - randomly change ellipse fill color
+*** F - strobe random ellipse fill colors
 */
 
 float posX, posY; // X and Y positions of ellipse
 float velX = 5.0, velY = 5.0; // X and Y velocities of ellipse
 float radX = 100, radY = 100; // Sizes of ellipse X and Y radii
 boolean manual = false; // Manual movement toggle
+boolean strobe = false; // toggle strobing random ellipse fill colors
 
 void setup() {
   size(1280, 800);
@@ -37,6 +39,10 @@ void draw() {
     posX += velX;
     posY += velY;
   }
+  // If strobe is true, fill ellipse with random color
+  if (strobe) {
+    fill(random(0, 255), random(0, 255), random(0, 255));
+  }
 }
 
 // M - toggle manual movement
@@ -44,6 +50,7 @@ void draw() {
 // LEFT/RIGHT - decr/incr radX
 // UP/DOWN - incr/decr radY
 // R - change ellipse fill color randomly
+// F - strobe random ellipse fill colors
 void keyPressed() {
   // UP/DOWN/LEFT/RIGHT arrow keys to change ellipse radii sizes
   if (keyCode == 38) radY++; //UP
@@ -57,6 +64,10 @@ void keyPressed() {
   // R to randomly change ellipse fill color
   if (key == 'r' || key == 'R') {
     fill(random(0, 255), random(0, 255), random(0, 255));
+  }
+  // F to strobe random ellipse fill colors
+  if (key == 'f' || key == 'F') {
+    strobe = !strobe;
   }
   // If manual is true, allow WASD movement
   if (manual) {
