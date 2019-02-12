@@ -10,6 +10,7 @@ CONTROLS:
 *** W/A/S/D - manual movement of ellipse is manual is true
 *** UP/DOWN - increase/decrease the Y radius of ellipse respectively
 *** RIGHT/LEFT - increase/decrease the X radius of ellipse respectively
+*** R - randomly change ellipse fill color
 */
 
 float posX, posY; // X and Y positions of ellipse
@@ -42,6 +43,7 @@ void draw() {
 // WASD - manual movement
 // LEFT/RIGHT - decr/incr radX
 // UP/DOWN - incr/decr radY
+// R - change ellipse fill color randomly
 void keyPressed() {
   // UP/DOWN/LEFT/RIGHT arrow keys to change ellipse radii sizes
   if (keyCode == 38) radY++; //UP
@@ -51,6 +53,10 @@ void keyPressed() {
   // M to toggle manual movement (true or false)
   if (key == 'm' || key == 'M') {
     manual = !manual;
+  }
+  // R to randomly change ellipse fill color
+  if (key == 'r' || key == 'R') {
+    fill(random(0, 255), random(0, 255), random(0, 255));
   }
   // If manual is true, allow WASD movement
   if (manual) {
