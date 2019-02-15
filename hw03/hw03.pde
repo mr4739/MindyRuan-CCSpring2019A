@@ -9,7 +9,7 @@ Summary: (Janky) Pong v2
 CONTROLS:
 *** W/S - move player 1 paddle up/down
 *** UP/DOWN - move player 2 paddle up/down
-*** SPACE - start ball
+*** SPACE - toggle pause, start game
 *** R - reset game
 *** T - spawn new ball
 */
