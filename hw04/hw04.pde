@@ -26,10 +26,10 @@ void draw() {
   float hue = map(mouseX, 0, width, 0, 360);
   float sat = map(mouseY, 0, height, 0, 100);
   color c1 = color(hue, sat, 100);
-  // Set c2 to the complementary color of c1
-  color c2 = color((hue(c1)+180)%360, sat, 100);
-  // Set background color to variation of c1
-  background(hue(c1), (saturation(c1)+50)%100, (brightness(c1)+50)%100);
+  // Set c2 to a triadic color of c1
+  color c2 = color((hue(c1)+120)%360, sat, 100);
+  // Set background color to other triadic of c1
+  background(color((hue(c1)+240)%360, sat, 100));
   
   // translate center of screen to (0, 0)
   translate(width/2, height/2);
