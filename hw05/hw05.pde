@@ -12,7 +12,6 @@ void setup() {
   size(1200, 800);
   noStroke();
   rectMode(CENTER);
-  frameRate(60);
   // Add 3 Lads to the squad
   lads[0] = new Lad(0, 200, 130, 120, 0);
   lads[1] = new Lad(300, 175, 180, 170, 5);
