@@ -115,12 +115,14 @@ void reset() {
   // Reset ball velocity
   ball.vel.y = -5;
   ball.vel.x = 0;
+  // Remove existing particle systems
+  ball.ps.clear();
   // Reset paddle position
   pX = width/2;
   // Game paused until player unpauses
   paused = true;
-  // If reset at win screen, do all of the above
-  // And reset lives, score, bricks, win flag
+  // If reset at win/lose screen, do all of the above
+  // And reset lives, score, bricks, flags
   if (showWin || showLose) {
     lives = 3;
     score = 0;
@@ -160,6 +162,12 @@ void keyPressed() {
   if (keyCode == RIGHT) isRight = true;
   if (keyCode == 'r' || keyCode == 'R') {
     reset();
+    bricks.clear();
+    for (int j = 0; j < 8; j++) {
+      for (int i = 0; i < 8; i++) {
+        bricks.add(new Brick(50+i*100, 25+j*50));
+      }
+    }
     lives = 3;
     score = 0;
   }

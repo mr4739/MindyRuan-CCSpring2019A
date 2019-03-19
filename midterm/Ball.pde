@@ -2,6 +2,7 @@ class Ball {
   public PVector pos;
   // default 0 velX, -6 velY
   public PVector vel = new PVector(0, -6);
+  public ArrayList<ParticleSystem> ps = new ArrayList<ParticleSystem>();
   
   public Ball() {}
   // PVector p = initial position PVector
@@ -22,6 +23,12 @@ class Ball {
     pos.add(vel);
     // Limit ball within screen
     pos.x = constrain(pos.x, 15, width-15);
+    // run existing particle systems
+    for (int i = 0; i < ps.size(); i++) {
+      ps.get(i).run();
+      // if particle system has no particles left, remove it
+      if (ps.get(i).particles.size() == 0) ps.remove(i);
+    }
     // check if ball collides with any bricks
     return checkCollisions(bricks);
   }
@@ -37,6 +44,8 @@ class Ball {
           && pos.y+15 + vel.y/2>= b.pos.y-b.size.y/2.0
           && pos.x+15 >= b.pos.x-b.size.x/2.0
           && pos.x-15 <= b.pos.x+b.size.x/2.0) {
+        // add a particle system where brick was destroyed
+        ps.add(new ParticleSystem(new PVector(b.pos.x, b.pos.y), b.c));
         // remove this brick from arraylist
         bricks.remove(i);
         // reverse y direction
@@ -50,6 +59,8 @@ class Ball {
           && pos.y+15 >= b.pos.y-b.size.y/2.0
           && pos.x+15 + vel.x/2 >= b.pos.x-b.size.x/2.0
           && pos.x-15 + vel.x/2 <= b.pos.x+b.size.x/2.0) {
+        // add a particle system where brick was destroyed
+        ps.add(new ParticleSystem(new PVector(b.pos.x, b.pos.y), b.c));
         // remove this brick from arraylist
         bricks.remove(i);
         // reverse x direction
