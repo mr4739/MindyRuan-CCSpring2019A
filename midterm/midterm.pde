@@ -18,6 +18,7 @@ boolean isLeft, isRight; // flags for if LEFT/RIGHT is held down
 boolean paused = true;
 boolean showWin, showLose;
 int score;
+int combo, maxCombo;
 int lives = 3;
 
 void setup() {
@@ -43,8 +44,9 @@ void draw() {
     background(0);
     fill(360, 0, 100); // white
     // Display current score and lives count at bottom of screen
-    text("Score: " + score, width/2+200, height-20);
-    text("Lives: " + lives, width/2-200, height-20);
+    text("Score: " + score, width/2-250, height-20);
+    text("Combo: " + combo, width/2+250, height-20);
+    drawLives();
     
     // Draw everything
     ball.display();
@@ -55,8 +57,12 @@ void draw() {
     
     // If game isn't paused, update ball and paddle positions
     if (!paused) {
-      // If ball collides with a brick, add 100 to score
-      if (ball.update(bricks)) score += 100;
+      // If ball collides with a brick, add 100 to score, increase combo
+      if (ball.update(bricks)) {
+        score += int(100 * (1 + combo/10.0));
+        // max score: 26557; max combo = 64
+        combo++;
+      }
       paddleUpdate();
     }
     
@@ -121,8 +127,12 @@ void reset() {
   pX = width/2;
   // Game paused until player unpauses
   paused = true;
+  // Replace max combo with this combo if bigger
+  if (combo > maxCombo) maxCombo = combo;
+  // Reset current combo
+  combo = 0;
   // If reset at win/lose screen, do all of the above
-  // And reset lives, score, bricks, flags
+  // And reset lives, score, bricks, flags, maxCombo
   if (showWin || showLose) {
     lives = 3;
     score = 0;
@@ -134,23 +144,36 @@ void reset() {
     }
     showWin = false;
     showLose = false;
+    maxCombo = 0;
   }
 }
 
 // Draw win screen
 void win() {
+  fill(360, 0, 100);
   background(0);
+  if (combo > maxCombo) maxCombo = combo;
   text("You won!", width/2, height/2-30);
   text("Score: " + score, width/2, height/2);
-  text("Press R to restart", width/2, height/2 + 60);
+  text("Max Combo: " + maxCombo, width/2, height/2+30);
+  text("Press R to restart", width/2, height/2 + 90);
 }
 
 // Draw game over screen
 void lose() {
+  fill(360, 0, 100);
   background(0);
   text("Game over!", width/2, height/2-30);
   text("Score: " + score, width/2, height/2);
-  text("Press R to restart", width/2, height/2 + 60);
+  text("Max Combo: " + maxCombo, width/2, height/2+30);
+  text("Press R to restart", width/2, height/2 + 90);
+}
+
+// Draw lives remaining
+void drawLives() {
+  for (int i = 0; i < lives; i++) {
+    circle(width/2-40 + i*40, height-30, 20);
+  }
 }
 
 // LEFT/RIGHT - set respective flags
@@ -170,6 +193,7 @@ void keyPressed() {
     }
     lives = 3;
     score = 0;
+    maxCombo = 0;
   }
   if (keyCode == ' ') paused = !paused;
   if (keyCode == 'w' || keyCode == 'W') showWin = true;
