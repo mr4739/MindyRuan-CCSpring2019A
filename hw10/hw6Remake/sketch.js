@@ -1,5 +1,5 @@
 /*
-hw10/sketch.js
+hw10/hw6Remake/sketch.js
 Author: Mindy Ruan
 Summary: Pong, p5 edition
 
