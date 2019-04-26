@@ -18,6 +18,7 @@ var sprite;         // sprite of pokemon
 var pkmnName;       // pokemon's name
 var loaded;         // boolean: done loading
 var img, imgCopy;   // image of pokemon sprite and copy (silhouette)
+var bgImg;          // who's that pkmn background image
 
 var cnv;            // container for canvas
 
@@ -34,6 +35,13 @@ function preload() {
     index = int(random(1, 808));
     // Append index to url base to generate url
     url = urlBase + index;
+    // Load background image if it hasn't been defined yet
+    // callback func: resize it to fit canvas
+    if (bgImg == undefined) {
+        bgImg = loadImage("who.png", bgImg => {
+            bgImg.resize(window.innerWidth/2, 2*window.innerHeight/3);
+        });
+    }
     sprite = httpGet(url, 'json', function(response) {
         // Get the pokemon's sprite link
         sprite = response.sprites.front_default;
@@ -58,11 +66,12 @@ function preload() {
                 }
             }
             imgCopy.updatePixels();
-            // White background
-            background(255);
-            imageMode(CENTER);
+            // Draw background
+            imageMode(CORNER);
+            background(bgImg);
             // Draw the silhouette copy
-            image(imgCopy, width/2, height/2);
+            imageMode(CENTER);
+            image(imgCopy, width/3, height/2);
         });
         loaded = true;
     });
@@ -111,7 +120,7 @@ function validate() {
     // Draw the unsilhouetted sprite
     // Change output to the pokemon's name
     if (answer == pkmnName) {
-        image(img, width/2, height/2);
+        image(img, width/3, height/2);
         output = "<b>IT'S " + pkmnName.toUpperCase() + "!</b>";
     } else {
         // Answer incorrect
@@ -126,7 +135,7 @@ function validate() {
 // Reveals correct answer
 function giveUp() {
     // Draw the unsilhouetted sprite
-    image(img, width/2, height/2);
+    image(img, width/3, height/2);
     // Output correct answer
     output = "<b>IT'S " + pkmnName.toUpperCase() + "!</b>";
     // Display output
