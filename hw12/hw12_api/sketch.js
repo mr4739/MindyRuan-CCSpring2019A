@@ -1,8 +1,10 @@
 /*
-hw12-p5/sketch.js
+hw12-api/sketch.js
 Author: Mindy Ruan
 Assignment: Use Processing to work with a data file locally for the first one, 
 and p5.js to work with an API for the second one.
+
+API: https://pokeapi.co/
 */
 
 // url for API requests
