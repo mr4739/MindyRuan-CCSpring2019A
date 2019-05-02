@@ -5,6 +5,7 @@ Dungeon Crawler
 boolean isUp, isDown, isLeft, isRight;
 Player player;
 boolean isInvincible = false;
+int invincStart;
 int floorNum = 1;
 int roomNum = 0;
 Room[] floor = new Room[1];
@@ -39,6 +40,22 @@ void draw() {
     if (f.cageHP <= 0 && player.hitbox.isColliding(f.hitbox)) {
       player.partySize++;
       currentRoom.friends.remove(i);
+    }
+  }
+  for (int i = 0; i < currentRoom.enemies.size(); i++) {
+    if (isInvincible) break;
+    Enemy e = currentRoom.enemies.get(i);
+    if (player.hitbox.isColliding(e.hitbox)) {
+      player.hp -= 5;
+      isInvincible = true;
+      invincStart = millis();
+      player.speed = 7.0;
+    }
+  }
+  if (isInvincible) {
+    if (millis() > invincStart + 1.5 * 1000) {
+      isInvincible = false;
+      player.speed = 5.0;
     }
   }
   

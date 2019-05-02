@@ -25,6 +25,7 @@ class Player {
   
   public void display() {
     fill(255);
+    if (isInvincible) fill(0, 255, 0);
     circle(pos.x, pos.y, w);
     hitbox.display();
   }
