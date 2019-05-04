@@ -1,6 +1,6 @@
 class Hitbox {
   float x = 0, y = 0;
-  int w = 0, h = 0;
+  float w = 0, h = 0;
   
   public Hitbox(float x, float y, int w, int h) {
     this.x = x;

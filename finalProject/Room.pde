@@ -36,10 +36,12 @@ class Room {
       friends.add(new Friend(new PVector(width/2, height/2), new PVector(0, 0), 50));
     }
     int numEnemies = int(random(2, 5));
-    if (!firstRoom) {
+    if ((!firstRoom && !lastRoom) || (firstRoom && !lastRoom)) {
       for (int i = 0; i < numEnemies; i++) {
         enemies.add(new Enemy(w, h, entranceHB.x, entranceHB.y));
       }
+    } else if (!firstRoom && lastRoom) {
+      enemies.add(new Boss(3));
     }
   }
   
@@ -66,6 +68,10 @@ class Room {
     }
     
     for (int i = 0; i < enemies.size(); i++) {
+      if (enemies.get(i).hp <= 0) {
+        enemies.remove(i);
+        break;
+      }
       enemies.get(i).chase();
       enemies.get(i).display();
     }
@@ -84,6 +90,15 @@ class Room {
           friends.get(j).isFree = true;
           friends.get(i).dir.x = 0;
           friends.get(i).dir.y = 0;
+          break;
+        }
+      }
+      for (int j = 0; j < enemies.size(); j++) {
+        if (friends.get(i).hitbox.isColliding(enemies.get(j).hitbox)) {
+          println("Hit");
+          friends.get(i).dir.x = 0;
+          friends.get(i).dir.y = 0;
+          enemies.get(j).hp -= 50;
           break;
         }
       }

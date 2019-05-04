@@ -25,6 +25,13 @@ class Enemy {
     hitbox.y = pos.y;
   }
   
+  public Enemy(float posX, float posY, float size) {
+    pos.x = posX;
+    pos.y = posY;
+    hitbox.w = size;
+    hitbox.h = size;
+  }
+  
   public void display() {
     fill(255, 0, 0);
     ellipse(pos.x, pos.y, 40, 40);
