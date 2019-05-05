@@ -6,6 +6,7 @@ boolean isUp, isDown, isLeft, isRight;
 Player player;
 boolean isInvincible = false;
 int invincStart;
+int score;
 int floorNum = 1;
 int roomNum = 0;
 Room[] floor = new Room[1];
@@ -46,6 +47,16 @@ void draw() {
     if (isInvincible) break;
     Enemy e = currentRoom.enemies.get(i);
     if (player.hitbox.isColliding(e.hitbox)) {
+      player.hp -= 5;
+      isInvincible = true;
+      invincStart = millis();
+      player.speed = 7.0;
+    }
+  }
+  for (int i = 0; i < currentRoom.bosses.size(); i++) {
+    if (isInvincible) break;
+    Boss b = currentRoom.bosses.get(i);
+    if (player.hitbox.isColliding(b.hitbox)) {
       player.hp -= 5;
       isInvincible = true;
       invincStart = millis();
@@ -142,6 +153,7 @@ void displayInfo() {
   }
   rect(width/2, 20, map(player.hp, 0, 100, 50, width-50), 20);
   text("" + player.hp + "/100", width/2, 60);
+  text("Score: " + score, width/2, height - 40);
 }
 
 void keyPressed() {

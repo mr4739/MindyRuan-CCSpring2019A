@@ -8,6 +8,7 @@ class Room {
   public ArrayList<Friend> friends = new ArrayList<Friend>();
   public ArrayList<Enemy> enemies = new ArrayList<Enemy>();
   public boolean firstRoom = false, lastRoom = false;
+  public ArrayList<Boss> bosses = new ArrayList<Boss>();
   //public PImage roomImgRescale = roomImg.resize(w, h);
   
   public Room(int oppositeEnt, boolean firstRoom, boolean lastRoom) {
@@ -41,7 +42,7 @@ class Room {
         enemies.add(new Enemy(w, h, entranceHB.x, entranceHB.y));
       }
     } else if (!firstRoom && lastRoom) {
-      enemies.add(new Boss(3));
+      bosses.add(new Boss(3));
     }
   }
   
@@ -70,10 +71,20 @@ class Room {
     for (int i = 0; i < enemies.size(); i++) {
       if (enemies.get(i).hp <= 0) {
         enemies.remove(i);
+        score += 100;
         break;
       }
       enemies.get(i).chase();
       enemies.get(i).display();
+    }
+    for (int i = 0; i < bosses.size(); i++) {
+      if (bosses.get(i).hp <= 0) {
+        bosses.remove(i);
+        if (bosses.size() == 0) score += 1000;
+        break;
+      }
+      bosses.get(i).chase();
+      bosses.get(i).display();
     }
     // check for collisions between friends
     checkFriendsCollision();
@@ -95,10 +106,20 @@ class Room {
       }
       for (int j = 0; j < enemies.size(); j++) {
         if (friends.get(i).hitbox.isColliding(enemies.get(j).hitbox)) {
-          println("Hit");
+          //println("Hit ");
           friends.get(i).dir.x = 0;
           friends.get(i).dir.y = 0;
-          enemies.get(j).hp -= 50;
+          enemies.get(j).loseHP(50);
+          break;
+        }
+      }
+      for (int j = 0; j < bosses.size(); j++) {
+        if (friends.get(i).hitbox.isColliding(bosses.get(j).hitbox)) {
+          //println("Hit ");
+          friends.get(i).dir.x = 0;
+          friends.get(i).dir.y = 0;
+          bosses.get(j).loseHP(50);
+          bosses.add(new Boss(bosses.get(j)));
           break;
         }
       }

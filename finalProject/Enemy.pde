@@ -46,10 +46,10 @@ class Enemy {
     pos.y += dir.y * speed;
     hitbox.x = pos.x;
     hitbox.y = pos.y;
-    // move this to main?
-    //if (player.hitbox.isColliding(hitbox)) {
-    //  player.hp -= 1;
-    //  // trigger invincibility
-    //}
+  }
+  
+  public void loseHP(int amt) {
+    hp -= amt;
+    // incr score
   }
 }
