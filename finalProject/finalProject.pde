@@ -2,6 +2,8 @@
 Dungeon Crawler
 */
 
+final int PLAY = 1, GAMEOVER = 2;
+int mode = 1;
 boolean isUp, isDown, isLeft, isRight;
 Player player;
 boolean isInvincible = false;
@@ -34,6 +36,19 @@ void setup() {
 
 void draw() {
   clear();
+  switch(mode) {
+  case 1:
+    play();
+    break;
+  case 2:
+    gameOver();
+    break;
+  }
+}
+
+void play() {
+  //clear();
+  if (player.hp <= 0) mode = GAMEOVER;
   checkDoors();
   // If player collides with a free friend, add to party and remove from room
   for (int i = 0; i < currentRoom.friends.size(); i++) {
@@ -64,7 +79,7 @@ void draw() {
     }
   }
   if (isInvincible) {
-    if (millis() > invincStart + 1.5 * 1000) {
+    if (millis() > invincStart + 0 * 1000) {
       isInvincible = false;
       player.speed = 5.0;
     }
@@ -140,6 +155,13 @@ void nextFloor(int lastRoom) {
   player.hp = (player.hp <= 90) ? player.hp += 10 : 100;
 }
 
+void gameOver() {
+  text("GAME OVER", width/2, height/2);
+  text("SCORE: " + score, width/2, height/2 + 40);
+  text("SPACE to restart", width/2, height/2 + 80);
+  
+}
+
 void displayInfo() {
   fill(255);
   text("Floor: " + floorNum, width/10, height/2);
@@ -156,25 +178,43 @@ void displayInfo() {
   text("Score: " + score, width/2, height - 40);
 }
 
+void reset() {
+  score = 0;
+  isInvincible = false;
+  floorNum = 1;
+  roomNum = 0;
+  floor = new Room[1];
+  floor[0] = new Room(1, true, true);
+  currentRoom = floor[0];
+  player = new Player(new PVector(width/2, height/2 + currentRoom.w/4));
+  roomImg.resize(currentRoom.w, currentRoom.h);
+  wallImg.resize(currentRoom.w, wallImg.height);
+  mode = PLAY;
+}
+
 void keyPressed() {
-  if (key == 'w' || key == 'W') {
-    isUp = true;
-    player.lastDir = 1; // UP
+  if (mode == PLAY) {
+    if (key == 'w' || key == 'W') {
+      isUp = true;
+      player.lastDir = 1; // UP
+    }
+    if (key == 's' || key == 'S') {
+      isDown = true;
+      player.lastDir = 0; // DOWN
+    }
+    if (key == 'a' || key == 'A') {
+      isLeft = true;
+      player.lastDir = 3; // LEFT
+    }
+    if (key == 'd' || key == 'D') {
+      isRight = true;
+      player.lastDir = 2; // RIGHT
+    }
+    if (key == 'o') player.hp -= 5;
+    if (key == ' ') player.attack(currentRoom);
+  } else if (mode == GAMEOVER) {
+    if (key == ' ') reset();
   }
-  if (key == 's' || key == 'S') {
-    isDown = true;
-    player.lastDir = 0; // DOWN
-  }
-  if (key == 'a' || key == 'A') {
-    isLeft = true;
-    player.lastDir = 3; // LEFT
-  }
-  if (key == 'd' || key == 'D') {
-    isRight = true;
-    player.lastDir = 2; // RIGHT
-  }
-  if (key == 'o') player.hp -= 5;
-  if (key == ' ') player.attack(currentRoom);
 }
 
 void keyReleased() {
