@@ -2,8 +2,8 @@
 Dungeon Crawler
 */
 
-final int PLAY = 1, GAMEOVER = 2;
-int mode = 1;
+final int START = 0, PLAY = 1, GAMEOVER = 2, INSTRUCTIONS = 3;
+int mode = 0;
 boolean isUp, isDown, isLeft, isRight;
 Player player;
 boolean isInvincible = false;
@@ -15,6 +15,10 @@ Room[] floor = new Room[1];
 Room currentRoom;
 PImage roomImg;
 PImage wallImg;
+PImage lad1, lad2;
+PImage smallLad1, smallLad2;
+PImage cage;
+boolean playerFrame = true;
 
 void setup() {
   size(1280, 1000);
@@ -32,23 +36,37 @@ void setup() {
   roomImg.resize(currentRoom.w, currentRoom.h);
   wallImg = loadImage("wall.png");
   wallImg.resize(currentRoom.w, wallImg.height);
+  lad1 = loadImage("lad1.png");
+  lad2 = loadImage("lad2.png");
+  lad1.resize(40, 40);
+  lad2.resize(40, 40);
+  smallLad1 = loadImage("lad1.png");
+  smallLad1.resize(20, 20);
+  cage = loadImage("cage.png");
+  cage.resize(20, 20);
 }
 
 void draw() {
   clear();
   switch(mode) {
+  case 0:
+    startScreen();
+    break;
   case 1:
     play();
     break;
   case 2:
     gameOver();
     break;
-  }
+  case 3:
+    instructions();
+    break;
+  }  
 }
 
 void play() {
   //clear();
-  if (player.hp <= 0) mode = GAMEOVER;
+  //if (player.hp <= 0) mode = GAMEOVER;
   checkDoors();
   // If player collides with a free friend, add to party and remove from room
   for (int i = 0; i < currentRoom.friends.size(); i++) {
@@ -79,7 +97,7 @@ void play() {
     }
   }
   if (isInvincible) {
-    if (millis() > invincStart + 0 * 1000) {
+    if (millis() > invincStart + 1 * 1000) {
       isInvincible = false;
       player.speed = 5.0;
     }
@@ -159,7 +177,21 @@ void gameOver() {
   text("GAME OVER", width/2, height/2);
   text("SCORE: " + score, width/2, height/2 + 40);
   text("SPACE to restart", width/2, height/2 + 80);
-  
+}
+
+void startScreen() {
+  // bigger player pic?
+  text("SPACE to start game", width/2, height/2 + 40);
+  text("I to view instructions", width/2, height/2 + 80);
+}
+
+void instructions() {
+  textSize(50);
+  text("INSTRUCTIONS", width/2, height/2 - 60);
+  textSize(30);
+  text("WASD to move", width/2, height/2);
+  text("SPACE to attack", width/2, height/2 + 40);
+  text("Q to go back", width/2, height/2 + 80);
 }
 
 void displayInfo() {
@@ -214,6 +246,11 @@ void keyPressed() {
     if (key == ' ') player.attack(currentRoom);
   } else if (mode == GAMEOVER) {
     if (key == ' ') reset();
+  } else if (mode == START) {
+    if (key == ' ') mode = PLAY;
+    if (key == 'i' || key == 'I') mode = INSTRUCTIONS;
+  } else if (mode == INSTRUCTIONS) {
+    if (key == 'q' || key == 'Q') mode = START;
   }
 }
 

@@ -18,13 +18,8 @@ class Friend {
   
   public void display(float roomW, float roomH) {
     if (dir.x != 0 || dir.y != 0) update(roomW, roomH);
-    if (isFree) {
-      fill(#A0FF8E);
-      circle(pos.x, pos.y, w);
-    } else {
-      fill(#FA735B);
-      circle(pos.x, pos.y, w);
-    }
+    image(smallLad1, pos.x, pos.y);
+    if (!isFree) image(cage, pos.x, pos.y);
     hitbox.display();
   }
   

@@ -38,7 +38,7 @@ class Enemy {
     hitbox.display();
   }
   
-  public void chase() {
+  public void update() {
     PVector dir = PVector.sub(player.pos, pos);
     dir.x = (dir.x > 0) ? 1 : -1;
     dir.y = (dir.y > 0) ? 1 : -1;
@@ -50,6 +50,5 @@ class Enemy {
   
   public void loseHP(int amt) {
     hp -= amt;
-    // incr score
   }
 }

@@ -1,7 +1,7 @@
 private int DOWN = 0, UP = 1, RIGHT = 2, LEFT = 3;
 
 class Room {
-  public int w = int(random(600, 1000)), h = int(random(500, 750));
+  public int w = int(random(600, 1000)), h = int(random(500, 700));
   public int entrance = 1;
   public int exit = floor(random(0,4));
   public Hitbox entranceHB, exitHB;
@@ -36,10 +36,16 @@ class Room {
     if (lastRoom) {
       friends.add(new Friend(new PVector(width/2, height/2), new PVector(0, 0), 50));
     }
-    int numEnemies = int(random(2, 5));
+    int numEnemies = int(random(2, 4));
     if ((!firstRoom && !lastRoom) || (firstRoom && !lastRoom)) {
       for (int i = 0; i < numEnemies; i++) {
         enemies.add(new Enemy(w, h, entranceHB.x, entranceHB.y));
+      }
+      if (floorNum >= 2) {
+        int numProjEnemies = int(random(1, 4));
+        for (int i = 0; i < numProjEnemies; i++) {
+          enemies.add(new ProjectileEnemy(w, h, entranceHB.x, entranceHB.y));
+        }
       }
     } else if (!firstRoom && lastRoom) {
       bosses.add(new Boss(3));
@@ -74,7 +80,7 @@ class Room {
         score += 100;
         break;
       }
-      enemies.get(i).chase();
+      enemies.get(i).update();
       enemies.get(i).display();
     }
     for (int i = 0; i < bosses.size(); i++) {
@@ -83,7 +89,7 @@ class Room {
         if (bosses.size() == 0) score += 1000;
         break;
       }
-      bosses.get(i).chase();
+      bosses.get(i).update();
       bosses.get(i).display();
     }
     // check for collisions between friends
@@ -106,7 +112,6 @@ class Room {
       }
       for (int j = 0; j < enemies.size(); j++) {
         if (friends.get(i).hitbox.isColliding(enemies.get(j).hitbox)) {
-          //println("Hit ");
           friends.get(i).dir.x = 0;
           friends.get(i).dir.y = 0;
           enemies.get(j).loseHP(50);
@@ -115,7 +120,6 @@ class Room {
       }
       for (int j = 0; j < bosses.size(); j++) {
         if (friends.get(i).hitbox.isColliding(bosses.get(j).hitbox)) {
-          //println("Hit ");
           friends.get(i).dir.x = 0;
           friends.get(i).dir.y = 0;
           bosses.get(j).loseHP(50);
