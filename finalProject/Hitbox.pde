@@ -1,7 +1,10 @@
 class Hitbox {
-  float x = 0, y = 0;
-  float w = 0, h = 0;
+  float x = 0, y = 0;    // position of hitbox
+  float w = 0, h = 0;    // hitbox width, height
   
+  // Hitbox constructor
+  // float x, y: position
+  // float w, h: size
   public Hitbox(float x, float y, int w, int h) {
     this.x = x;
     this.y = y;
@@ -9,11 +12,14 @@ class Hitbox {
     this.h = h;
   }
   
-  public void display() {
-    fill (#FFF16C, 60);
-    rect(x, y, w, h);
-  }
+  // Draw hitbox, for debugging
+  //public void display() {
+  //  fill (#FFF16C, 60);
+  //  rect(x, y, w, h);
+  //}
   
+  // Returns true if hitbox collides with other hitbox, false otherwise
+  // Hitbox other: other hitbox to check against
   public boolean isColliding(Hitbox other) {
     /*
     B bottom >= A top && 
