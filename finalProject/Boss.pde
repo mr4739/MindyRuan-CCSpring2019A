@@ -13,6 +13,7 @@ class Boss extends Enemy {
   public Boss(Boss other) {
     super(other.pos.x, other.pos.y, other.size);
     other.pos.x -= 2*size;
+    pos.x += 2*size;
     divisions = other.divisions;
     size = divisions * 30;
     hp = 50 * divisions;

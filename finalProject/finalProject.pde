@@ -1,13 +1,19 @@
 /*
 Dungeon Crawler
 */
+import processing.sound.*;
 
-final int START = 0, PLAY = 1, GAMEOVER = 2, INSTRUCTIONS = 3;
-int mode = 0;
+// constants to define game modes
+final int START = 0, PLAY = 1, GAMEOVER = 2, INSTRUCTIONS = 3, CHEAT = 4;
+// Sounds
+SoundFile bgm, shoot, cageBreak, whoosh, doorLock, victory, gameOver;
+// initial game mode
+int mode = START;
+// boolean flags for player movement
 boolean isUp, isDown, isLeft, isRight;
 Player player;
-boolean isInvincible = false;
-int invincStart;
+boolean isInvincible = false;    // Is the player currently invincible
+int invincStart;                 // Time invincibility activated
 int score;
 int floorNum = 1;
 int roomNum = 0;
@@ -16,6 +22,7 @@ Room currentRoom;
 PImage roomImg;
 PImage wallImg;
 PImage lad1, lad2;
+PImage medLad1, medLad2;
 PImage smallLad1, smallLad2;
 PImage cage;
 boolean playerFrame = true;
@@ -38,12 +45,23 @@ void setup() {
   wallImg.resize(currentRoom.w, wallImg.height);
   lad1 = loadImage("lad1.png");
   lad2 = loadImage("lad2.png");
-  lad1.resize(40, 40);
-  lad2.resize(40, 40);
+  medLad1 = loadImage("lad1.png");
+  medLad2 = loadImage("lad2.png");
+  medLad1.resize(40, 40);
+  medLad2.resize(40, 40);
   smallLad1 = loadImage("lad1.png");
   smallLad1.resize(20, 20);
   cage = loadImage("cage.png");
   cage.resize(20, 20);
+  
+  gameOver = new SoundFile(this, "GameOver.wav");
+  bgm = new SoundFile(this, "GoblinTheme.wav");
+  shoot = new SoundFile(this, "shoot.wav");
+  cageBreak = new SoundFile(this, "break.wav");
+  whoosh = new SoundFile(this, "whoosh.wav");
+  doorLock = new SoundFile(this, "doorLock.wav");
+  victory = new SoundFile(this, "victory.wav");
+  bgm.loop();
 }
 
 void draw() {
@@ -61,12 +79,19 @@ void draw() {
   case 3:
     instructions();
     break;
+  case 4:
+    cheat();
+    break;
   }  
 }
 
 void play() {
   //clear();
-  //if (player.hp <= 0) mode = GAMEOVER;
+  //if (player.hp <= 0) {
+  //  mode = GAMEOVER;
+  //  bgm.stop();
+  //  gameOver.loop();
+  //}
   checkDoors();
   // If player collides with a free friend, add to party and remove from room
   for (int i = 0; i < currentRoom.friends.size(); i++) {
@@ -142,6 +167,7 @@ void checkDoors() {
 
 // Repositions player in the right spot when using doors
 void repositionPlayer(Hitbox door, int direction) {
+  doorLock.play();
   switch(direction) {
     case 0: // DOWN
       player.pos.y = door.y - 11 - player.w/2;
@@ -160,6 +186,7 @@ void repositionPlayer(Hitbox door, int direction) {
 
 // Goes to next floor
 void nextFloor(int lastRoom) {
+  victory.play();
   roomNum = 0;
   floorNum++;
   // Generate new rooms for the new floor
@@ -181,6 +208,19 @@ void gameOver() {
 
 void startScreen() {
   // bigger player pic?
+  if (frameCount % 10 == 0) playerFrame = !playerFrame;
+  if (playerFrame) {
+      image(lad1, width/2+70, height/2-50);
+  } else {
+      image(lad2, width/2+70, height/2-50);
+  }
+  for (int i = 0; i < 3; i++) {
+    if (playerFrame) {
+      image(medLad1, width/2 - 10 - i*50, height/2-20);
+    } else {
+      image(medLad2, width/2 - 10 - i*50, height/2-20);
+    }
+  }
   text("SPACE to start game", width/2, height/2 + 40);
   text("I to view instructions", width/2, height/2 + 80);
 }
@@ -191,6 +231,14 @@ void instructions() {
   textSize(30);
   text("WASD to move", width/2, height/2);
   text("SPACE to attack", width/2, height/2 + 40);
+  text("Q to go back", width/2, height/2 + 80);
+}
+
+void cheat() {
+  textSize(50);
+  text("CHEAT", width/2, height/2 - 60);
+  textSize(30);
+  text("Friends: " + player.partySize, width/2, height/2);
   text("Q to go back", width/2, height/2 + 80);
 }
 
@@ -207,6 +255,7 @@ void displayInfo() {
   }
   rect(width/2, 20, map(player.hp, 0, 100, 50, width-50), 20);
   text("" + player.hp + "/100", width/2, 60);
+  fill(255);
   text("Score: " + score, width/2, height - 40);
 }
 
@@ -221,7 +270,7 @@ void reset() {
   player = new Player(new PVector(width/2, height/2 + currentRoom.w/4));
   roomImg.resize(currentRoom.w, currentRoom.h);
   wallImg.resize(currentRoom.w, wallImg.height);
-  mode = PLAY;
+  mode = START;
 }
 
 void keyPressed() {
@@ -245,11 +294,22 @@ void keyPressed() {
     if (key == 'o') player.hp -= 5;
     if (key == ' ') player.attack(currentRoom);
   } else if (mode == GAMEOVER) {
-    if (key == ' ') reset();
+    if (key == ' ') { 
+      reset();
+      gameOver.stop();
+      bgm.loop();
+    }
   } else if (mode == START) {
-    if (key == ' ') mode = PLAY;
+    if (key == ' ') { 
+      mode = PLAY;
+      //lad1.resize(40, 40);
+      //lad2.resize(40, 40);
+    }
     if (key == 'i' || key == 'I') mode = INSTRUCTIONS;
+    if (key == 'c' || key == 'C') mode = CHEAT;
   } else if (mode == INSTRUCTIONS) {
+    if (key == 'q' || key == 'Q') mode = START;
+  } else if (mode == CHEAT) {
     if (key == 'q' || key == 'Q') mode = START;
   }
 }

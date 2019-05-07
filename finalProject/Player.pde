@@ -24,19 +24,18 @@ class Player {
   
   public void display() {
     fill(255);
-    if (isInvincible) fill(0, 255, 0);
-    //circle(pos.x, pos.y, w);
     if (frameCount % 10 == 0) playerFrame = !playerFrame;
     if (playerFrame) {
-      image(lad1, pos.x, pos.y);
+      image(medLad1, pos.x, pos.y);
     } else {
-      image(lad2, pos.x, pos.y);
+      if (!isInvincible) image(medLad2, pos.x, pos.y);
     }
     hitbox.display();
   }
   
   public void attack(Room currentRoom) {
     // If party not empty, throw friend
+    whoosh.play();
     if (partySize > 0) {
       partySize--;
       // Add thrown friend to room
@@ -52,6 +51,7 @@ class Player {
         if (currentRoom.friends.get(i).cageHP > 0 && hitbox.isColliding(currentRoom.friends.get(i).hitbox)) {
           // melee cage
           currentRoom.friends.get(i).cageHP -= 25;
+          if (currentRoom.friends.get(i).cageHP == 0) cageBreak.play();
         }
       }
       // check player against enemies

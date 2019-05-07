@@ -48,7 +48,9 @@ class Room {
         }
       }
     } else if (!firstRoom && lastRoom) {
-      bosses.add(new Boss(3));
+      int bossSize = 3 + floorNum/5;
+      if (bossSize > 10) bossSize = 10;
+      bosses.add(new Boss(bossSize));
     }
   }
   
@@ -104,6 +106,7 @@ class Room {
       for (int j = 0; j < friends.size(); j++) {
         if (friends.get(j).cageHP > 0 && friends.get(i).hitbox.isColliding(friends.get(j).hitbox)) {
           friends.get(j).cageHP -= 50;
+          cageBreak.play();
           friends.get(j).isFree = true;
           friends.get(i).dir.x = 0;
           friends.get(i).dir.y = 0;

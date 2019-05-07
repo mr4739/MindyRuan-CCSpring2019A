@@ -20,14 +20,16 @@ class ProjectileEnemy extends Enemy {
   }
   
   public void update() {
-    if (frameCount % 30 == 0) bullets.add(new Bullet(pos.x, pos.y));
+    if (frameCount % 30 == 0) { 
+      bullets.add(new Bullet(pos.x, pos.y));
+      shoot.play();
+    }
     for (int i = 0; i < bullets.size(); i++) {
       Bullet b = bullets.get(i);
       b.update();
       if (b.pos.x >= width/2 + currentRoom.w/2 || b.pos.x <= width/2 - currentRoom.w/2 ||
           b.pos.y >= height/2 + currentRoom.h/2 || b.pos.y <= height/2 - currentRoom.h/2) bullets.remove(i);
       if (!isInvincible && b.hitbox.isColliding(player.hitbox)) {
-        //println("Hit!");
         player.hp -= 5;
         isInvincible = true;
         invincStart = millis();
