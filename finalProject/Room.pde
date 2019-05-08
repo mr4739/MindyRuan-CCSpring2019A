@@ -81,11 +81,11 @@ class Room {
     if (bosses.size() == 0) {
       // draw entrance
       if (!firstRoom) {
-        fill(#A0FF8E); // green
+        fill(255); // white
         rect(entranceHB.x, entranceHB.y, entranceHB.w, entranceHB.h);
       }
       // draw exit
-      fill(#FA735B); // red
+      fill(0); // black
       rect(exitHB.x, exitHB.y, exitHB.w, exitHB.h);
     }
     

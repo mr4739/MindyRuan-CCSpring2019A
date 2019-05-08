@@ -7,6 +7,7 @@ Boss appears on last room of each floor
 class Boss extends Enemy {
   public int divisions = 0; // Number of divisions
   public float size = 30;   // Default size
+  public PImage img;
   
   // Boss constructor
   // int divs: number of divisions
@@ -17,6 +18,8 @@ class Boss extends Enemy {
     size = divs * 30;
     hp = 50 * divisions;
     speed = 1.5 / divisions;
+    img = bossImg.get();
+    if (size > 0) img.resize(int(size), int(size));
   }
   
   // Boss constructor
@@ -31,12 +34,14 @@ class Boss extends Enemy {
     pos.x += size/2;
     hp = 50 * divisions;
     speed = 1.5 / divisions;
+    img = other.img.get();
   }
   
   // Draw boss
   public void display() {
     fill(255, 0, 0);
-    ellipse(pos.x, pos.y, size, size);
+    //ellipse(pos.x, pos.y, size, size);
+    image(img, pos.x, pos.y);
   }
   
   // When hit, lose hp
@@ -48,5 +53,6 @@ class Boss extends Enemy {
     hitbox.w = size;
     hitbox.h = size;
     speed = 1.5 / divisions;
+    if (size > 0) img.resize(int(size), int(size));
   }
 }

@@ -26,6 +26,7 @@ PImage lad1, lad2;               // default sized lad frames 1 & 2
 PImage medLad1, medLad2;         // medium sized lad frames 1 & 2
 PImage smallLad;                 // small sized lad, single frame
 PImage enemy1, enemy2;           // enemy frames 1 & 2
+PImage bossImg;
 PImage cage;                     // image of cage
 boolean playerFrame = true;      // which frame to draw; true = 1, false = 2
 PFont pixelmix;                  // pixel font
@@ -75,6 +76,7 @@ void setup() {
   enemy2 = loadImage("enemy2.png");
   enemy1.resize(50, 50);
   enemy2.resize(50, 50);
+  bossImg = loadImage("enemy1.png");
   cage = loadImage("cage.png");
   cage.resize(20, 20);
   
