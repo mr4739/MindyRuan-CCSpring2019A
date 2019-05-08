@@ -294,10 +294,6 @@ void cheat() {
 
 // Display game info
 void displayInfo() {
-  fill(255);
-  text("Floor: " + floorNum, width/10, height/2);
-  text("Room: " + (roomNum+1), width/10, height/2+30);
-  text("Friends: " + player.partySize, width/10, height/2 + 60);
   // Health bar
   if (player.hp > 50) {
     fill(#A0FF8E);
@@ -308,7 +304,9 @@ void displayInfo() {
   text("" + player.hp + "/100", width/2, 60);
   // Display score
   fill(255);
+  text("" + floorNum + "F " + (roomNum+1) + "R", 200, height - 40);
   text("Score: " + score, width/2, height - 40);
+  text("Friends: " + player.partySize, width - 200, height - 40);
 }
 
 // Resets game, goes back to start screen
