@@ -12,6 +12,7 @@ int mode = START;
 // boolean flags for player movement
 boolean isUp, isDown, isLeft, isRight;
 Player player;
+int playerMaxHp = 100;
 boolean isInvincible = false;    // Is the player currently invincible
 int invincStart;                 // time invincibility activated
 int score;                       // current score
@@ -27,6 +28,7 @@ PImage smallLad;                 // small sized lad, single frame
 PImage cage;                     // image of cage
 boolean playerFrame = true;      // which frame to draw; true = 1, false = 2
 PFont pixelmix;                  // pixel font
+//Table scores;
 
 void setup() {
   size(1280, 1000);
@@ -46,6 +48,14 @@ void setup() {
   currentRoom = floor[0];
   // Initialize player
   player = new Player(new PVector(width/2, height/2 + currentRoom.w/4));
+  
+  //scores = loadTable("highscores.csv");
+  //TableRow firstRow = scores.getRow(1);
+  //firstRow.setString(0, "hello");
+  //firstRow.setInt(1, 9000);
+  //saveTable(scores, "highscores.csv");
+  
+  //println(firstRow.getString(0));
   
   // Load all images, resize where applicable
   roomImg = loadImage("map01.png");
@@ -271,6 +281,7 @@ void startScreen() {
   }
   text("SPACE to start game", width/2, height/2 + 40);
   text("I to view instructions", width/2, height/2 + 80);
+  text("C to cheat", width/2, height/2 + 120);
 }
 
 // When mode = INSTRUCTIONS
@@ -288,20 +299,23 @@ void cheat() {
   textSize(50);
   text("CHEAT", width/2, height/2 - 60);
   textSize(30);
-  text("Friends: " + player.partySize, width/2, height/2);
+  text("<R     Friends: " + player.partySize + "    T>", width/2, height/2);
+  text("<F       HP: " + playerMaxHp + "      G>", width/2, height/2 + 40);
   text("Q to go back", width/2, height/2 + 80);
 }
 
 // Display game info
 void displayInfo() {
-  // Health bar
-  if (player.hp > 50) {
+  // Health bar - green: more than half; red: less
+  if (player.hp > playerMaxHp/2) {
     fill(#A0FF8E);
+  } else if (player.hp > playerMaxHp/4) {
+    fill(#FFD548);
   } else {
     fill(#FA735B);
   }
-  rect(width/2, 20, map(player.hp, 0, 100, 50, width-50), 20);
-  text("" + player.hp + "/100", width/2, 60);
+  rect(width/2, 20, map(player.hp, 0, playerMaxHp, 50, width-50), 20);
+  text("" + player.hp + "/" + playerMaxHp, width/2, 60);
   // Display score
   fill(255);
   text("" + floorNum + "F " + (roomNum+1) + "R", 200, height - 40);
@@ -370,8 +384,25 @@ void keyPressed() {
     if (key == 'q' || key == 'Q') mode = START;
   // Cheat screen controls
   } else if (mode == CHEAT) {
+    // R/T change friends
+    if (key == 'r' || key == 'R') {
+      player.partySize = (player.partySize - 1 < 0) ? 0 : player.partySize - 1;
+    }
+    if (key == 't' || key == 'T') {
+      player.partySize = (player.partySize + 1 > 100) ? 100 : player.partySize + 1;
+    }
+    // F/G change HP
+    if (key == 'f' || key == 'F') {
+      playerMaxHp = (playerMaxHp - 10 < 10) ? 10 : playerMaxHp - 10;
+    }
+    if (key == 'g' || key == 'G') {
+      playerMaxHp = (playerMaxHp + 10 > 500) ? 500 : playerMaxHp + 10;
+    }
     // Q - go back to start
-    if (key == 'q' || key == 'Q') mode = START;
+    if (key == 'q' || key == 'Q') { 
+      mode = START;
+      player.hp = playerMaxHp;
+    }
   }
 }
 
