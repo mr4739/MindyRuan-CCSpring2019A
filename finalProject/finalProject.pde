@@ -180,38 +180,41 @@ void play() {
 
 // Updates the current room if player collides with a door
 void checkDoors() {
-  // If player colliding with entrance, go back to previous room
-  if (player.hitbox.isColliding(currentRoom.entranceHB)) {
-    // Go back if this isn't the first room on the floor
-    if (roomNum != 0) {
-      roomNum --;
-      currentRoom = floor[roomNum];
-      // reposition player to come out of the correct door
-      repositionPlayer(currentRoom.exitHB, currentRoom.exit);
-      // resize the room images to fit current room
-      roomImg.resize(currentRoom.w, currentRoom.h);
-      wallImg.resize(currentRoom.w, wallImg.height);
-    } 
-  }
-  // If player colliding with exit,
-  if (player.hitbox.isColliding(currentRoom.exitHB)) {
-    // If this is the last room on the floor, go to next floor
-    if (roomNum == floor.length-1) {
-      nextFloor(currentRoom.exit);
-      // reposition player to come out of the correct door
-      repositionPlayer(currentRoom.entranceHB, currentRoom.entrance);
-      // resize the room images to fit current room
-      roomImg.resize(currentRoom.w, currentRoom.h);
-      wallImg.resize(currentRoom.w, wallImg.height);
-    } else {
-      // Not last room, go to next room
-      roomNum++;
-      currentRoom = floor[roomNum];
-      // reposition player to come out of the correct door
-      repositionPlayer(currentRoom.entranceHB, currentRoom.entrance);
-      // resize the room images to fit current room
-      roomImg.resize(currentRoom.w, currentRoom.h);
-      wallImg.resize(currentRoom.w, wallImg.height);
+  // Only check for collisions if there are no bosses in the room
+  if (currentRoom.bosses.size() == 0) {
+    // If player colliding with entrance, go back to previous room
+    if (player.hitbox.isColliding(currentRoom.entranceHB)) {
+      // Go back if this isn't the first room on the floor
+      if (roomNum != 0) {
+        roomNum --;
+        currentRoom = floor[roomNum];
+        // reposition player to come out of the correct door
+        repositionPlayer(currentRoom.exitHB, currentRoom.exit);
+        // resize the room images to fit current room
+        roomImg.resize(currentRoom.w, currentRoom.h);
+        wallImg.resize(currentRoom.w, wallImg.height);
+      } 
+    }
+    // If player colliding with exit,
+    if (player.hitbox.isColliding(currentRoom.exitHB)) {
+      // If this is the last room on the floor, go to next floor
+      if (roomNum == floor.length-1) {
+        nextFloor(currentRoom.exit);
+        // reposition player to come out of the correct door
+        repositionPlayer(currentRoom.entranceHB, currentRoom.entrance);
+        // resize the room images to fit current room
+        roomImg.resize(currentRoom.w, currentRoom.h);
+        wallImg.resize(currentRoom.w, wallImg.height);
+      } else {
+        // Not last room, go to next room
+        roomNum++;
+        currentRoom = floor[roomNum];
+        // reposition player to come out of the correct door
+        repositionPlayer(currentRoom.entranceHB, currentRoom.entrance);
+        // resize the room images to fit current room
+        roomImg.resize(currentRoom.w, currentRoom.h);
+        wallImg.resize(currentRoom.w, wallImg.height);
+      }
     }
   }
 }

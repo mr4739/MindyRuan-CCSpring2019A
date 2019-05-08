@@ -77,14 +77,17 @@ class Room {
     image(wallImg, width/2, height/2 - h/2 - wallImg.height/2);
     image(roomImg, width/2, height/2);
     
-    // draw entrance
-    if (!firstRoom) {
-      fill(#A0FF8E); // green
-      rect(entranceHB.x, entranceHB.y, entranceHB.w, entranceHB.h);
+    // Draw doors if not a boss room
+    if (bosses.size() == 0) {
+      // draw entrance
+      if (!firstRoom) {
+        fill(#A0FF8E); // green
+        rect(entranceHB.x, entranceHB.y, entranceHB.w, entranceHB.h);
+      }
+      // draw exit
+      fill(#FA735B); // red
+      rect(exitHB.x, exitHB.y, exitHB.w, exitHB.h);
     }
-    // draw exit
-    fill(#FA735B); // red
-    rect(exitHB.x, exitHB.y, exitHB.w, exitHB.h);
     
     // draw all friends in the room
     for (int i = 0; i < friends.size(); i++) {
