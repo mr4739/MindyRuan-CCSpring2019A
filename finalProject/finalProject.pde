@@ -43,14 +43,6 @@ void setup() {
   pixelmix = createFont("pixelmix.ttf", 25);  // load in font
   textFont(pixelmix);
   
-  // Initialize first room of first floor
-  // By default, exit is on upper wall
-  // Current room is first room on first floor
-  floor[0] = new Room(1, true, true);
-  currentRoom = floor[0];
-  // Initialize player
-  player = new Player(new PVector(width/2, height/2 + currentRoom.w/4));
-  
   //scores = loadTable("highscores.csv");
   //TableRow firstRow = scores.getRow(1);
   //firstRow.setString(0, "hello");
@@ -61,9 +53,9 @@ void setup() {
   
   // Load all images, resize where applicable
   roomImg = loadImage("map01.png");
-  roomImg.resize(currentRoom.w, currentRoom.h);
+  //roomImg.resize(currentRoom.w, currentRoom.h);
   wallImg = loadImage("wall.png");
-  wallImg.resize(currentRoom.w, wallImg.height);
+  //wallImg.resize(currentRoom.w, wallImg.height);
   lad1 = loadImage("lad1.png");
   lad2 = loadImage("lad2.png");
   medLad1 = loadImage("lad1.png");
@@ -79,6 +71,14 @@ void setup() {
   bossImg = loadImage("enemy1.png");
   cage = loadImage("cage.png");
   cage.resize(20, 20);
+  
+  // Initialize first room of first floor
+  // By default, exit is on upper wall
+  // Current room is first room on first floor
+  floor[0] = new Room(1, true, true);
+  currentRoom = floor[0];
+  // Initialize player
+  player = new Player(new PVector(width/2, height/2 + currentRoom.w/4));
   
   // Load all sound files
   gameOver = new SoundFile(this, "GameOver.wav");

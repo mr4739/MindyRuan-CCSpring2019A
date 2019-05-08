@@ -10,7 +10,8 @@ class Room {
   public ArrayList<Enemy> enemies = new ArrayList<Enemy>();    // Enemies in this room
   public ArrayList<Boss> bosses = new ArrayList<Boss>();       // Bosses in this room
   public boolean firstRoom = false, lastRoom = false;          // is this the first/last room?
-  
+  public PImage floor;
+  public PImage wall;
   
   // Room constructor
   // int oppositeEnt: direction opposite the entrance
@@ -67,6 +68,10 @@ class Room {
       if (bossSize > 10) bossSize = 10;
       bosses.add(new Boss(bossSize));
     }
+    floor = roomImg.get();
+    wall = wallImg.get();
+    floor.resize(w, h);
+    wall.resize(w, wall.height);
   }
   
   // Draw Room and its entities
@@ -74,8 +79,8 @@ class Room {
     // draw room
     fill(#8f673f);
     rect(width/2, height/2, w, h);
-    image(wallImg, width/2, height/2 - h/2 - wallImg.height/2);
-    image(roomImg, width/2, height/2);
+    image(wall, width/2, height/2 - h/2 - wallImg.height/2);
+    image(floor, width/2, height/2);
     
     // Draw doors if not a boss room
     if (bosses.size() == 0) {
