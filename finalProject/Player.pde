@@ -6,6 +6,8 @@ class Player {
   public int hp = 100;                                    // player's hp
   public Hitbox hitbox = new Hitbox(pos.x, pos. y, w, w); // player's hitbox
   public int partySize = 0;                               // number of friends in party
+  public boolean canShoot = true;                         // whether player can shoot
+  public int shootStart;                                  // when player last shot
   
   // Player constructor
   // PVector position: initial position
@@ -44,9 +46,15 @@ class Player {
   // Room currentRoom: current room
   public void attack(Room currentRoom) {
     whoosh.play(); // play whoosh sound
-    // If party not empty, throw friend
-    if (partySize > 0) {
+    // If player can't shoot, enable if half a second passed
+    if (!canShoot) {
+      if (millis() >= 0.5 * 1000 + shootStart) canShoot = true;
+    }
+    // If party not empty and player can shoot, throw friend
+    if (canShoot && partySize > 0) {
       partySize--;
+      canShoot = false;
+      shootStart = millis();
       // Add thrown friend to room
       if (lastDir == 0) currentRoom.friends.add(new Friend(new PVector(pos.x, pos.y + w*1.1), new PVector(0, 1), 0));
       if (lastDir == 1) currentRoom.friends.add(new Friend(new PVector(pos.x, pos.y + w*-1.1), new PVector(0, -1), 0));

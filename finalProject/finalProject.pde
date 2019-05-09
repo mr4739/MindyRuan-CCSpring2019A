@@ -4,7 +4,7 @@ Dungeon Crawler
 import processing.sound.*;
 
 // constants to define game modes
-final int START = 0, PLAY = 1, GAMEOVER = 2, INSTRUCTIONS = 3, CHEAT = 4;
+final int START = 0, PLAY = 1, GAMEOVER = 2, INSTRUCTIONS = 3, CHEAT = 4, HIGHSCORE = 5;
 // Sounds
 SoundFile bgm, shoot, cageBreak, whoosh, doorLock, victory, gameOver;
 // initial game mode
@@ -12,7 +12,7 @@ int mode = START;
 // boolean flags for player movement
 boolean isUp, isDown, isLeft, isRight;
 Player player;
-int playerMaxHp = 100;
+int playerMaxHp = 100;           // player's max HP
 boolean isInvincible = false;    // Is the player currently invincible
 int invincStart;                 // time invincibility activated
 int score;                       // current score
@@ -26,11 +26,13 @@ PImage lad1, lad2;               // default sized lad frames 1 & 2
 PImage medLad1, medLad2;         // medium sized lad frames 1 & 2
 PImage smallLad;                 // small sized lad, single frame
 PImage enemy1, enemy2;           // enemy frames 1 & 2
-PImage bossImg1, bossImg2;                  // image of boss
+PImage bossImg1, bossImg2;       // boss frames 1 & 2
 PImage cage;                     // image of cage
 boolean playerFrame = true;      // which frame to draw; true = 1, false = 2
 PFont pixelmix;                  // pixel font
-//Table scores;
+Table scores;                    // for highscores
+char[] name = {char(65), char(65), char(65)};    // ['A', 'A', 'A']
+int nameIndex = 0;               // index in name array to toggle
 
 void setup() {
   size(1280, 1000);
@@ -43,13 +45,9 @@ void setup() {
   pixelmix = createFont("pixelmix.ttf", 25);  // load in font
   textFont(pixelmix);
   
-  //scores = loadTable("highscores.csv");
-  //TableRow firstRow = scores.getRow(1);
-  //firstRow.setString(0, "hello");
-  //firstRow.setInt(1, 9000);
-  //saveTable(scores, "highscores.csv");
-  
-  //println(firstRow.getString(0));
+  // load highscores csv, set score colume type to INT for sorting
+  scores = loadTable("highscores.csv");
+  scores.setColumnType(1, Table.INT);
   
   // Load all images, resize where applicable
   roomImg = loadImage("map01.png");
@@ -112,6 +110,9 @@ void draw() {
   case CHEAT:
     cheat();
     break;
+  case HIGHSCORE:
+    highscore();
+    break;
   }  
 }
 
@@ -119,6 +120,14 @@ void draw() {
 void play() {
   // If player is dead, set mode to GAMEOVER, play gameover music
   if (player.hp <= 0) {
+    //TableRow newRow = scores.addRow();
+    //newRow.setString(0, "asdf");
+    //newRow.setInt(1, score);
+    //scores.sortReverse(int(1));
+    //for (TableRow row : scores.rows()) {
+    //  println(row.getString(0) + ": " + row.getInt(1));
+    //}
+    //saveTable(scores, "highscores.csv");
     mode = GAMEOVER;
     bgm.stop();
     gameOver.loop();
@@ -266,10 +275,47 @@ void nextFloor(int lastRoom) {
 // When mode = GAMEOVER
 void gameOver() {
   textSize(50);
-  text("GAME OVER", width/2, height/2);
+  text("GAME OVER", width/2, 250);
   textSize(25);
-  text("SCORE: " + score, width/2, height/2 + 40);
-  text("SPACE to restart", width/2, height/2 + 80);
+  // Add new highscore if within top 5
+  int numRows = (scores.getRowCount() > 5) ? 5 : 0;
+  if (numRows == 0 || scores.getRow(numRows-1).getInt(1) < score) {
+    text("Input name:", width/2, 350);
+    textSize(50);
+    // display name, green if selected, white if not
+    for (int i = 0; i < name.length; i++) {
+      if (i == nameIndex) {
+        fill(0, 255, 0);
+      } else {
+        fill(255);
+      }
+      text(name[i], width/2 - 50 + i * 50, 440);
+    }
+    textSize(25);
+    fill(255);
+    text("SCORE: " + score, width/2, height/2);
+    text("WASD - toggle name", width/2, height/2 + 140);
+    text("SPACE - submit", width/2, height/2 + 180);
+  // Shame the player if not
+  } else {
+    text("No high score!", width/2, 350);
+    text("Try harder :)", width/2, 390);
+    text("SCORE: " + score, width/2, height/2);
+    text("SPACE - restart", width/2, height/2 + 100);
+  }
+}
+
+// When mode = HIGHSCORE
+void highscore() {
+  textSize(50);
+  text("HIGHSCORES", width/2, 300);
+  int numRows = (scores.getRowCount() > 5) ? 5 : scores.getRowCount();
+  textSize(25);
+  // display the top 5 scores
+  for (int i = 0; i < numRows; i++) {
+    text(scores.getRow(i).getString(0) + "     " + scores.getRow(i).getInt(1), width/2, 350 + i * 50);
+  }
+  text("Q - go back", width/2, height/2 + 140);
 }
 
 // When mode = START
@@ -290,9 +336,10 @@ void startScreen() {
       image(medLad2, width/2 - 10 - i*50, height/2-20);
     }
   }
-  text("SPACE to start game", width/2, height/2 + 40);
-  text("I to view instructions", width/2, height/2 + 80);
-  text("C to cheat", width/2, height/2 + 120);
+  text("SPACE - start game", width/2, height/2 + 40);
+  text("I - instructions", width/2, height/2 + 80);
+  text("H - highscores", width/2, height/2 + 120);
+  text("C - cheat", width/2, height/2 + 160);
 }
 
 // When mode = INSTRUCTIONS
@@ -300,9 +347,9 @@ void instructions() {
   textSize(50);
   text("INSTRUCTIONS", width/2, height/2 - 60);
   textSize(25);
-  text("WASD to move", width/2, height/2);
-  text("SPACE to attack", width/2, height/2 + 40);
-  text("Q to go back", width/2, height/2 + 80);
+  text("WASD - move", width/2, height/2);
+  text("SPACE - attack", width/2, height/2 + 40);
+  text("Q - go back", width/2, height/2 + 120);
 }
 
 // When mode = CHEAT
@@ -312,7 +359,7 @@ void cheat() {
   textSize(30);
   text("<R     Friends: " + player.partySize + "    T>", width/2, height/2);
   text("<F       HP: " + playerMaxHp + "      G>", width/2, height/2 + 40);
-  text("Q to go back", width/2, height/2 + 80);
+  text("Q - go back", width/2, height/2 + 120);
 }
 
 // Display game info
@@ -374,11 +421,44 @@ void keyPressed() {
     if (key == ' ') player.attack(currentRoom);
   // Game over screen controls
   } else if (mode == GAMEOVER) {
-    // SPACE - restart
-    if (key == ' ') { 
-      reset();
+    // WASD - toggle name
+    if (key == 'a' || key == 'A') {
+      nameIndex = (nameIndex > 0) ? nameIndex - 1 : 2;
+    }
+    if (key == 'd' || key == 'D') {
+      nameIndex = (nameIndex < 2) ? nameIndex + 1 : 0;
+    }
+    if (key == 'w' || key == 'w') {
+      name[nameIndex] = (int(name[nameIndex]) > 65) ? char(int(name[nameIndex]) - 1) : char(90);
+    }
+    if (key == 's' || key == 'S') {
+      name[nameIndex] = (int(name[nameIndex]) < 90) ? char(int(name[nameIndex]) + 1) : char(65);
+    }
+    // SPACE - submit score or restart
+    if (key == ' ') {
+      int numRows = (scores.getRowCount() > 5) ? 5 : 0;
+      // Submit score if within top 5
+      if (numRows == 0 || scores.getRow(numRows-1).getInt(1) < score) {
+        // New row with name and score
+        TableRow newRow = scores.addRow();
+        newRow.setString(0, new String(name));
+        newRow.setInt(1, score);
+        // sort the table in reverse
+        scores.sortReverse(int(1));
+        saveTable(scores, "highscores.csv");
+        // Go to highscore screen
+        mode = HIGHSCORE;
+      // Otherwise, restart
+      } else {
+        reset();
+      }
       gameOver.stop();
       bgm.loop();
+    }
+  } else if (mode == HIGHSCORE) {
+    // Q - go back to start
+    if (key == 'q' || key == 'Q') {
+      reset();
     }
   // Start screen controls
   } else if (mode == START) {
@@ -388,6 +468,7 @@ void keyPressed() {
     }
     // Switch to instructions/cheat screens
     if (key == 'i' || key == 'I') mode = INSTRUCTIONS;
+    if (key == 'h' || key == 'H') mode = HIGHSCORE;
     if (key == 'c' || key == 'C') mode = CHEAT;
   // Instructions screen controls
   } else if (mode == INSTRUCTIONS) {
