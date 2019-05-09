@@ -356,7 +356,7 @@ void instructions() {
 void cheat() {
   textSize(50);
   text("CHEAT", width/2, height/2 - 60);
-  textSize(30);
+  textSize(25);
   text("<R     Friends: " + player.partySize + "    T>", width/2, height/2);
   text("<F       HP: " + playerMaxHp + "      G>", width/2, height/2 + 40);
   text("Q - go back", width/2, height/2 + 120);
