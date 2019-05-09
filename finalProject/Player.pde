@@ -5,7 +5,7 @@ class Player {
   public int lastDir = 1;                                 // last movement direction
   public int hp = 100;                                    // player's hp
   public Hitbox hitbox = new Hitbox(pos.x, pos. y, w, w); // player's hitbox
-  public int partySize = 10;                              // number of friends in party
+  public int partySize = 0;                               // number of friends in party
   
   // Player constructor
   // PVector position: initial position

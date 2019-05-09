@@ -20,8 +20,13 @@ class ProjectileEnemy extends Enemy {
   
   // Draw ProjectileEnemy
   public void display() {
-    fill(0, 0, 255);
-    ellipse(pos.x, pos.y, 50, 50);
+    // Sync with player frame
+    // Draw frame 1 if true, frame 2 if false
+    if (playerFrame) {
+      image(enemy1, pos.x, pos.y);
+    } else {
+      image(enemy2, pos.x, pos.y);
+    }
     //hitbox.display();
     // Draw all active bullets
     for (int i = 0; i < bullets.size(); i++) {

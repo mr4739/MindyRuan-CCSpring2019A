@@ -26,7 +26,7 @@ PImage lad1, lad2;               // default sized lad frames 1 & 2
 PImage medLad1, medLad2;         // medium sized lad frames 1 & 2
 PImage smallLad;                 // small sized lad, single frame
 PImage enemy1, enemy2;           // enemy frames 1 & 2
-PImage bossImg;
+PImage bossImg1, bossImg2;                  // image of boss
 PImage cage;                     // image of cage
 boolean playerFrame = true;      // which frame to draw; true = 1, false = 2
 PFont pixelmix;                  // pixel font
@@ -68,7 +68,8 @@ void setup() {
   enemy2 = loadImage("enemy2.png");
   enemy1.resize(50, 50);
   enemy2.resize(50, 50);
-  bossImg = loadImage("enemy1.png");
+  bossImg1 = loadImage("enemy1.png");
+  bossImg2 = loadImage("enemy2.png");
   cage = loadImage("cage.png");
   cage.resize(20, 20);
   
@@ -259,7 +260,7 @@ void nextFloor(int lastRoom) {
     floor[i] = new Room(floor[i-1].exit, false, i+1 == floorNum);
   }
   // Regain 10 hp after finishing a floor, 100hp max
-  player.hp = (player.hp <= 90) ? player.hp += 10 : 100;
+  player.hp = (player.hp <= playerMaxHp - 10) ? player.hp += 10 : playerMaxHp;
 }
 
 // When mode = GAMEOVER

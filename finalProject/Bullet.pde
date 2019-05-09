@@ -25,7 +25,7 @@ class Bullet {
   
   // Draw bullet
   public void display() {
-    fill(0, 0, 255);
+    fill(0);
     ellipse(pos.x, pos.y, 10, 10);
   }
 }
