@@ -1,6 +1,13 @@
 /*
-Dungeon Crawler
+finalProject.pde
+Author: Mindy Ruan
+Summary: Dungeon Crawler
+
+CONTROLS:
+*** WASD - control player
+*** SPACE - attack
 */
+
 import processing.sound.*;
 
 // constants to define game modes
@@ -120,14 +127,6 @@ void draw() {
 void play() {
   // If player is dead, set mode to GAMEOVER, play gameover music
   if (player.hp <= 0) {
-    //TableRow newRow = scores.addRow();
-    //newRow.setString(0, "asdf");
-    //newRow.setInt(1, score);
-    //scores.sortReverse(int(1));
-    //for (TableRow row : scores.rows()) {
-    //  println(row.getString(0) + ": " + row.getInt(1));
-    //}
-    //saveTable(scores, "highscores.csv");
     mode = GAMEOVER;
     bgm.stop();
     gameOver.loop();
@@ -416,7 +415,6 @@ void keyPressed() {
       isRight = true;
       player.lastDir = 2; // RIGHT
     }
-    if (key == 'o') player.hp -= 5;
     // SPACE to attack
     if (key == ' ') player.attack(currentRoom);
   // Game over screen controls
